@@ -7,6 +7,7 @@ import org.apache.kafka.streams.processor.StateRestoreCallback;
 import org.apache.kafka.streams.processor.StateStore;
 import org.apache.kafka.streams.state.KeyValueIterator;
 import org.apache.kafka.streams.state.KeyValueStore;
+import org.apache.kafka.streams.state.StoreBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
@@ -18,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RedisDBKeyValueStore implements KeyValueStore<Bytes,byte[]> {
+public class RedisDBKeyValueStore implements KeyValueStore<Bytes,byte[]>, StoreBuilder<RedisDBKeyValueStore> {
 
     private static final Logger log = LoggerFactory.getLogger(RedisDBKeyValueStore.class);
 
@@ -36,6 +37,42 @@ public class RedisDBKeyValueStore implements KeyValueStore<Bytes,byte[]> {
         this.redisStoreTemplate = redisStoreTemplate;
 
     }
+    /** =========================== StoreBuilder =========================== **/
+    @Override
+    public StoreBuilder<RedisDBKeyValueStore> withCachingEnabled() {
+        return null;
+    }
+
+    @Override
+    public StoreBuilder<RedisDBKeyValueStore> withCachingDisabled() {
+        return null;
+    }
+
+    @Override
+    public StoreBuilder<RedisDBKeyValueStore> withLoggingDisabled() {
+        return null;
+    }
+
+    @Override
+    public RedisDBKeyValueStore build() {
+        return null;
+    }
+
+    @Override
+    public Map<String, String> logConfig() {
+        return null;
+    }
+
+    @Override
+    public boolean loggingEnabled() {
+        return false;
+    }
+
+    @Override
+    public StoreBuilder<RedisDBKeyValueStore> withLoggingEnabled(Map config) {
+        return null;
+    }
+
     /** =========================== tateStore =========================== **/
     @Override
     public String name() {
@@ -121,7 +158,6 @@ public class RedisDBKeyValueStore implements KeyValueStore<Bytes,byte[]> {
         throw new UnsupportedOperationException();
     }
 
-    @Override
     public KeyValueIterator<Bytes, byte[]> reverseRange(Bytes from, Bytes to) {
         throw new UnsupportedOperationException();
     }
@@ -132,7 +168,6 @@ public class RedisDBKeyValueStore implements KeyValueStore<Bytes,byte[]> {
         return new RedisKeyValueIterator(values);
     }
 
-    @Override
     public KeyValueIterator<Bytes, byte[]> reverseAll() {
         throw new UnsupportedOperationException();
     }

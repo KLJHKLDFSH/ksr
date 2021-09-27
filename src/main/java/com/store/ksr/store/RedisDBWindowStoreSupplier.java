@@ -9,17 +9,14 @@ public class RedisDBWindowStoreSupplier implements WindowBytesStoreSupplier {
 
     private final String name;
     private final long windowSize;
-    private final long segmentIntervalMs;
-    private final boolean retainDuplicates;
     private final long retentionPeriod;
     private final RedisStoreTemplate redisStoreTemplate;
 
-    public RedisDBWindowStoreSupplier(String name, RedisStoreTemplate redisStoreTemplate, long windowSize, long segmentIntervalMs, boolean retainDuplicates, long retentionPeriod) {
+    public RedisDBWindowStoreSupplier(String name, RedisStoreTemplate redisStoreTemplate,
+                                      long windowSize, long retentionPeriod) {
         this.name = name;
         this.redisStoreTemplate = redisStoreTemplate;
         this.windowSize = windowSize;
-        this.segmentIntervalMs = segmentIntervalMs;
-        this.retainDuplicates = retainDuplicates;
         this.retentionPeriod = retentionPeriod;
     }
 
@@ -29,9 +26,12 @@ public class RedisDBWindowStoreSupplier implements WindowBytesStoreSupplier {
         throw new IllegalStateException("Segments is deprecated and should not be called");
     }
 
+    /**
+     * redis window store is not *really* segmented, so just say size is 1 ms
+     */
     @Override
     public long segmentIntervalMs() {
-        return this.segmentIntervalMs;
+        return 1;
     }
 
     @Override
@@ -41,7 +41,7 @@ public class RedisDBWindowStoreSupplier implements WindowBytesStoreSupplier {
 
     @Override
     public boolean retainDuplicates() {
-        return this.retainDuplicates;
+        return false;
     }
 
     @Override
@@ -56,11 +56,11 @@ public class RedisDBWindowStoreSupplier implements WindowBytesStoreSupplier {
 
     @Override
     public WindowStore<Bytes, byte[]> get() {
-        return new RedisDBWindowedStore(this.name,redisStoreTemplate,windowSize);
+        return null;
     }
 
     @Override
     public String metricsScope() {
-        return null;
+        return "redis-window";
     }
 }

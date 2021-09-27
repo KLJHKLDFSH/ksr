@@ -26,9 +26,7 @@ import java.util.UUID;
 @Configuration
 public class KafkaConfig {
 
-    /**
-     * =============================================consumer=====================================
-     **/
+    /** =============================================consumer=====================================**/
     @Bean
     public Map<String, Object> consumerProp() {
         Map<String, Object> props = new HashMap<>();
@@ -68,24 +66,32 @@ public class KafkaConfig {
         return new KafkaTemplate<>(new DefaultKafkaProducerFactory<>(prop));
     }
 
-    /**
-     * =============================================streams=====================================
-     **/
+    /** =============================================streams===================================== **/
     @Bean(name = "kafkaStreamsConfig")
     public Properties kafkaStreamsConfiguration() {
-        String id = UUID.randomUUID().toString();
         Properties prop = new Properties();
         prop.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         prop.put(StreamsConfig.APPLICATION_ID_CONFIG, "defaultApplication");
-        prop.put(StreamsConfig.CLIENT_ID_CONFIG, id);
-        prop.put(StreamsConfig.STATE_DIR_CONFIG, "/home/linan/application/data/" + id);
-        prop.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.EXACTLY_ONCE_BETA);
+         prop.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.EXACTLY_ONCE_BETA);
         prop.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.IntegerSerde.class.getName());
         prop.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.StringSerde.class.getName());
         return prop;
     }
 
+    /**
+     * streams base state data root dir
+     */
+    public final static String STREAMS_STATE_DATA_DIR = "/home/linan/application/data/";
 
+    /**
+     * streams clint Id
+     * @return
+     */
+    public static String randomClientId(){
+        return UUID.randomUUID().toString();
+    }
+
+    /** =============================================streams==================================== **/
     @Bean
     public KafkaAdmin admin() {
         Map<String, Object> configs = new HashMap<>();
